@@ -1,10 +1,3 @@
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (unless (find-package :cl-creditcard.system)
-    (defpackage :cl-creditcard.system
-      (:use :common-lisp :asdf))))
-
-(in-package :cl-creditcard.system)
-
 (defsystem :cl-creditcard
   :description "Generic interace library for talking with credit card processors."
   :author "<programmers@acceleration.net>"

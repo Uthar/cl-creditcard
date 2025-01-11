@@ -1,10 +1,3 @@
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (unless (find-package :cl-creditcard.system)
-    (defpackage :cl-creditcard.system
-      (:use :common-lisp :asdf))))
-
-(in-package :cl-creditcard.system)
-
 (defsystem :cl-authorize-net
   :description "library for talking with authorize.net credit card processors."
   :author "<programmers@acceleration.net>"
@@ -19,15 +12,10 @@
 					       (:file "authorize-processor")
 					       (:file "authorize-echeck"))
 				  ))))
-  :depends-on (:cl-creditcard :drakma :alexandria :symbol-munger
-               :split-sequence))
+  :depends-on (:cl-creditcard :drakma :alexandria :symbol-munger :split-sequence)
+  :in-order-to ((test-op (test-op :cl-authorize-net/tests))))
 
-(defmethod asdf:perform ((o asdf:test-op) (c (eql (find-system :cl-authorize-net))))
-  (asdf:load-system :cl-authorize-net-tests)
-  (let ((*package* (find-package :cl-authorize-tests)))
-    (eval (read-from-string "(run-tests :all)"))))
-
-(defsystem :cl-authorize-net-tests
+(defsystem :cl-authorize-net/tests
   :description "Talk to the Authorize.net Payment Processing Software. Test Suite."
   :author "<programmers@acceleration.net>"
   :licence "MIT"
@@ -38,7 +26,8 @@
 	    :components ((:file "packages")
 			 (:file "authorize" )
 			 )))
-  :depends-on (:cl-authorize-net :lisp-unit :alexandria))
+  :depends-on (:cl-authorize-net :lisp-unit :alexandria)
+  :perform (test-op (o c) (symbol-call :lisp-unit :run-tests :all :cl-authorize-tests)))
 
 ;; Copyright (c) 2008 Acceleration.net, Russ Tyndall, Ryan Davis, Nathan Bird
 
